@@ -5,6 +5,8 @@ import lk.ijse.project.back_end.service.JobService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequestMapping("api/v1/job")
 @RestController
 @RequiredArgsConstructor
@@ -19,5 +21,10 @@ public class JobController {
     @PutMapping("update")
     public void updateJob(@RequestBody JobDto jobDto) {
         jobService.updateJob(jobDto);
+    }
+
+    @GetMapping("get")
+    public List<JobDto> getAllJobs() {
+        return jobService.getAllJobs();
     }
 }
