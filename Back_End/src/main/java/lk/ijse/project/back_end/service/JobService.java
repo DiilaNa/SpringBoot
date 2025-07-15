@@ -8,4 +8,6 @@ public interface JobService {
      void saveJob(JobDto jobDto);
      void updateJob(JobDto jobDto);
      List<JobDto> getAllJobs();
+
+     void changeJobStatus(String id);
 }

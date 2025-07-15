@@ -36,4 +36,9 @@ public class JobServiceImpl implements JobService {
         return modelMapper.map(allJobs, new TypeToken<List<JobDto>>() {}.getType());
 
     }
+
+    @Override
+    public void changeJobStatus(String id) {
+        jobRepository.updateJobStatus(id);
+    }
 }
