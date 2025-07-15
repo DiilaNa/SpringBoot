@@ -33,4 +33,9 @@ public class JobController {
     public void changeJob(@PathVariable String id) {
         jobService.changeJobStatus(id);
     }
+
+    @GetMapping("search/{keyword}")
+    public List<JobDto> searchJob(@PathVariable("keyword") String keyword) {
+        return jobService.getAllJobsByKeyword(keyword);
+    }
 }

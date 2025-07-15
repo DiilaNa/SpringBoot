@@ -41,4 +41,10 @@ public class JobServiceImpl implements JobService {
     public void changeJobStatus(String id) {
         jobRepository.updateJobStatus(id);
     }
+
+    @Override
+    public List<JobDto> getAllJobsByKeyword(String keyword) {
+        List<Job> list = jobRepository.findJobByJobTitleContainingIgnoreCase(keyword);
+        return modelMapper.map(list, new TypeToken<List<JobDto>>() {}.getType());
+    }
 }
