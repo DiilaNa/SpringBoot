@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class JobService {
-    public void save(JobDto jobDto) {
+    public void saveJob(JobDto jobDto) {
 
     }
 }
