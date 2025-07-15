@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class JobServiceImpl implements JobService {
@@ -18,5 +20,10 @@ public class JobServiceImpl implements JobService {
     @Override
     public void saveJob(JobDto jobDto) {
         jobRepository.save(modelMapper.map(jobDto, Job.class));
+    }
+
+    @Override
+    public void updateJob(JobDto jobDto) {
+      jobRepository.save(modelMapper.map(jobDto, Job.class));
     }
 }

@@ -5,4 +5,5 @@ import org.springframework.stereotype.Service;
 
 public interface JobService {
      void saveJob(JobDto jobDto);
+     void updateJob(JobDto jobDto);
 }
