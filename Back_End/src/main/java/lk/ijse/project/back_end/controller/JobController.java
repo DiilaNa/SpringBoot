@@ -16,9 +16,7 @@ public class JobController {
     private final JobService jobService;
 
     @PostMapping("create")
-    public void createJob(@RequestBody JobDto jobDto) {
-        jobService.saveJob(jobDto);
-    }
+    public void createJob(@RequestBody JobDto jobDto) {jobService.saveJob(jobDto);}
 
     @PutMapping("update")
     public void updateJob(@RequestBody JobDto jobDto) {

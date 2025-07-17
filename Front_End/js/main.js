@@ -1,15 +1,19 @@
 $("#saveJobBtn").on("click", function () {
 
         const jobData = {
-            title: $("#jobTitle").val(),
+            jobTitle: $("#jobTitle").val(),
             company: $("#companyName").val(),
             location: $("#jobLocation").val(),
             type: $("#jobType").val(),
-            description: $("#jobDescription").val(),
+            jobDescription: $("#jobDescription").val(),
             status: $("#jobStatus").val()
 
         };
-        console.log(jobData);
+
+        if(jobData.type === null || jobData.title === null || jobData.company === null || jobData.location === null ||  jobData.description === null || jobData.status === null ){
+            alert("Job saved failed")
+        }
+
         $.ajax({
             type: "POST",
             url: "http://localhost:8080/api/v1/job/create",
@@ -17,7 +21,6 @@ $("#saveJobBtn").on("click", function () {
             contentType: "application/json",
             success: function (response) {
                 alert("Job saved successfully!");
-
             },
             error: function (xhr, status, error) {
                 console.error("Error saving job:", error);

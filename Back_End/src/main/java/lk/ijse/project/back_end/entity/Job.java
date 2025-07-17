@@ -1,9 +1,6 @@
 package lk.ijse.project.back_end.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,6 +20,5 @@ public class Job {
     private String location;
     private String type;
     private String jobDescription;
-
     private String status;
 }
