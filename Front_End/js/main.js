@@ -1,3 +1,63 @@
+$(document).ready(function () {
+    loadJobs();
+
+});
+
+$(document).on("click", ".edit-btn", function () {
+    const jobId = $(this).data("id");
+
+    $.ajax({
+        url: `http://localhost:8080/api/v1/job/update`,
+        type: "GET",
+        success: function (job) {
+            $("#editJobId").val(job.id);
+            $("#editJobTitle").val(job.jobTitle);
+            $("#editCompanyName").val(job.company);
+            $("#editJobLocation").val(job.location);
+            $("#editJobType").val(job.type);
+            $("#editJobDescription").val(job.jobDescription);
+            $("#editJobStatus").val(job.status || ""); // optional: handle if null
+
+            // Show the modal
+            $("#editJobModal").modal("show");
+
+        },
+        error: function () {
+            alert("Failed to load job details.");
+        }
+    });
+});
+
+
+function loadJobs() {
+    $.ajax({
+        url: "http://localhost:8080/api/v1/job/get",
+        type: "GET",
+        success: function (jobs) {
+            $("#jobsTableBody").empty();
+
+            jobs.forEach((job, index) => {
+                $("#jobsTableBody").append(`
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${job.jobTitle}</td>
+                        <td>${job.company}</td>
+                        <td>${job.location}</td>
+                        <td>${job.type}</td>
+                        <td>${job.status}</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning edit-btn" data-id="${job.id}">Edit</button>
+                        </td>
+                    </tr>
+                `);
+            });
+        },
+        error: function () {
+            alert("Failed to load jobs.");
+        }
+    });
+}
+
 $("#saveJobBtn").on("click", function () {
 
         const jobData = {
@@ -29,35 +89,29 @@ $("#saveJobBtn").on("click", function () {
             }
         });
 });
-$(document).ready(function () {
-    loadJobs();
-});
+$("#updateJobBtn").on("click", function () {
+    const updatedJob = {
+        id: $("#editJobId").val(),
+        jobTitle: $("#editJobTitle").val(),
+        company: $("#editCompanyName").val(),
+        location: $("#editJobLocation").val(),
+        type: $("#editJobType").val(),
+        jobDescription: $("#editJobDescription").val(),
+        status: $("#editJobStatus").val()
+    };
 
-function loadJobs() {
     $.ajax({
-        url: "http://localhost:8080/api/v1/job/get", // Adjust if your GET endpoint is different
-        type: "GET",
-        success: function (jobs) {
-            $("#jobsTableBody").empty();
-
-            jobs.forEach((job, index) => {
-                $("#jobsTableBody").append(`
-                    <tr>
-                        <td>${index + 1}</td>
-                        <td>${job.jobTitle}</td>
-                        <td>${job.company}</td>
-                        <td>${job.location}</td>
-                        <td>${job.type}</td>
-                        <td>${job.status}</td>
-                        <td>
-                            <button class="btn btn-sm btn-warning edit-btn" data-id="${job.id}">Edit</button>
-                        </td>
-                    </tr>
-                `);
-            });
+        url: `http://localhost:8080/api/v1/job/update/${updatedJob.id}`,
+        type: "PUT",
+        data: JSON.stringify(updatedJob),
+        contentType: "application/json",
+        success: function () {
+            alert("Job updated successfully!");
+            $("#editJobModal").modal("hide");
+            loadJobs();
         },
         error: function () {
-            alert("Failed to load jobs.");
+            alert("Failed to update job.");
         }
     });
-}
+});
