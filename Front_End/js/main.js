@@ -53,6 +53,7 @@ function loadJobs() {
                         <td>${job.status}</td>
                         <td>
                             <button class="btn btn-sm btn-warning edit-btn" data-id="${job.id}">Edit</button>
+                             <button class="btn btn-sm btn-info status-btn" data-id="${job.id}">Change Status</button>
                         </td>
                     </tr>
                 `);
@@ -63,6 +64,22 @@ function loadJobs() {
         }
     });
 }
+
+$(document).on("click", ".status-btn", function () {
+    const jobId = $(this).data("id");
+
+    $.ajax({
+        url: `http://localhost:8080/api/v1/job/status/${jobId}`,
+        type: "PATCH",
+        success: function (jobs) {
+           alert("Changed Successfully")
+            loadJobs();
+        },
+        error: function () {
+            alert("Failed to load jobs.");
+        }
+    });
+});
 
 /*---------------Save Data--------------------*/
 $("#saveJobBtn").on("click", function () {
