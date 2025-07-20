@@ -3,32 +3,38 @@ $(document).ready(function () {
 
 });
 
+/*----------------------Edit Button -------------------------*/
 $(document).on("click", ".edit-btn", function () {
     const jobId = $(this).data("id");
 
     $.ajax({
-        url: `http://localhost:8080/api/v1/job/update`,
+        url: `http://localhost:8080/api/v1/job/get`, // get all jobs
         type: "GET",
-        success: function (job) {
+        success: function (jobs) {
+            const job = jobs.find(j => j.id == jobId); // find the one you need
+
+            if (!job) {
+                alert("Job not found.");
+                return;
+            }
+
             $("#editJobId").val(job.id);
             $("#editJobTitle").val(job.jobTitle);
             $("#editCompanyName").val(job.company);
             $("#editJobLocation").val(job.location);
             $("#editJobType").val(job.type);
             $("#editJobDescription").val(job.jobDescription);
-            $("#editJobStatus").val(job.status || ""); // optional: handle if null
+            $("#editJobStatus").val(job.status || "");
 
-            // Show the modal
             $("#editJobModal").modal("show");
-
         },
         error: function () {
-            alert("Failed to load job details.");
+            alert("Failed to load jobs.");
         }
     });
 });
 
-
+/*-----------------Load Data to the Table---------------------*/
 function loadJobs() {
     $.ajax({
         url: "http://localhost:8080/api/v1/job/get",
@@ -58,6 +64,7 @@ function loadJobs() {
     });
 }
 
+/*---------------Save Data--------------------*/
 $("#saveJobBtn").on("click", function () {
 
         const jobData = {
@@ -88,30 +95,4 @@ $("#saveJobBtn").on("click", function () {
                 alert("Failed to save job.");
             }
         });
-});
-$("#updateJobBtn").on("click", function () {
-    const updatedJob = {
-        id: $("#editJobId").val(),
-        jobTitle: $("#editJobTitle").val(),
-        company: $("#editCompanyName").val(),
-        location: $("#editJobLocation").val(),
-        type: $("#editJobType").val(),
-        jobDescription: $("#editJobDescription").val(),
-        status: $("#editJobStatus").val()
-    };
-
-    $.ajax({
-        url: `http://localhost:8080/api/v1/job/update/${updatedJob.id}`,
-        type: "PUT",
-        data: JSON.stringify(updatedJob),
-        contentType: "application/json",
-        success: function () {
-            alert("Job updated successfully!");
-            $("#editJobModal").modal("hide");
-            loadJobs();
-        },
-        error: function () {
-            alert("Failed to update job.");
-        }
-    });
 });
