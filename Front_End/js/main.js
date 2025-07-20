@@ -96,3 +96,36 @@ $("#saveJobBtn").on("click", function () {
             }
         });
 });
+
+/*----------------Update Data------------------------*/
+$("#updateJobBtn").on("click", function () {
+    const updatedJob = {
+        id: $("#editJobId").val(),
+        jobTitle: $("#editJobTitle").val(),
+        company: $("#editCompanyName").val(),
+        location: $("#editJobLocation").val(),
+        type: $("#editJobType").val(),
+        jobDescription: $("#editJobDescription").val(),
+        status: $("#editJobStatus").val()
+    };
+
+    if (!updatedJob.id || !updatedJob.jobTitle || !updatedJob.company || !updatedJob.location || !updatedJob.type || !updatedJob.jobDescription || !updatedJob.status) {
+        alert("All fields are required for update.");
+        return;
+    }
+
+    $.ajax({
+        url: `http://localhost:8080/api/v1/job/update`,
+        type: "PUT",
+        data: JSON.stringify(updatedJob),
+        contentType: "application/json",
+        success: function () {
+            alert("Job updated successfully!");
+            $("#editJobModal").modal("hide");
+            loadJobs();
+        },
+        error: function () {
+            alert("Failed to update job.");
+        }
+    });
+});
