@@ -3,6 +3,8 @@ package lk.ijse.project.back_end.controller;
 import lk.ijse.project.back_end.dto.JobDto;
 import lk.ijse.project.back_end.service.JobService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,4 +39,12 @@ public class JobController {
     public List<JobDto> searchJob(@PathVariable("keyword") String keyword) {
         return jobService.getAllJobsByKeyword(keyword);
     }
+    @GetMapping("get-paged")
+    public Page<JobDto> getPagedJobs(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "7") int size
+    ) {
+        return jobService.getPagedJobs(PageRequest.of(page, size));
+    }
+
 }

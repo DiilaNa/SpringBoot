@@ -7,6 +7,9 @@ import lk.ijse.project.back_end.service.JobService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -46,5 +49,11 @@ public class JobServiceImpl implements JobService {
     public List<JobDto> getAllJobsByKeyword(String keyword) {
         List<Job> list = jobRepository.findJobByJobTitleContainingIgnoreCase(keyword);
         return modelMapper.map(list, new TypeToken<List<JobDto>>() {}.getType());
+    }
+
+    @Override
+    public Page<JobDto> getPagedJobs(Pageable pageable) {
+        return jobRepository.findAll(pageable).map(job -> modelMapper.map(job, JobDto.class));
+
     }
 }

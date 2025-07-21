@@ -1,7 +1,79 @@
 $(document).ready(function () {
-    loadJobs();
-
+    loadPagedJobs(0);
 });
+
+let currentPage = 0;
+const jobsPerPage = 7;
+
+function loadPagedJobs(page = 0) {
+    $.ajax({
+        url: `http://localhost:8080/api/v1/job/get-paged?page=${page}&size=${jobsPerPage}`,
+        type: "GET",
+        success: function (response) {
+            const jobs = response.content;
+            const totalPages = response.totalPages;
+
+            currentPage = page;
+
+            $("#jobsTableBody").empty();
+            jobs.forEach((job, index) => {
+                $("#jobsTableBody").append(`
+                    <tr>
+                        <td>${index + 1 + (page * jobsPerPage)}</td>
+                        <td>${job.jobTitle}</td>
+                        <td>${job.company}</td>
+                        <td>${job.location}</td>
+                        <td>${job.type}</td>
+                        <td>${job.status}</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning edit-btn" data-id="${job.id}">Edit</button>
+                            <button class="btn btn-sm btn-info status-btn" data-id="${job.id}">Change Status</button>
+                        </td>
+                    </tr>
+                `);
+            });
+
+            generateNextPrevButtons(totalPages, currentPage);
+        },
+        error: function () {
+            alert("Failed to load jobs.");
+        }
+    });
+}
+function generateNextPrevButtons(totalPages, currentPage) {
+    let html = "";
+
+    if (currentPage > 0) {
+        html += `<li class="page-item">
+                    <button class="page-link page-btn" data-page="${currentPage - 1}">Previous</button>
+                 </li>`;
+    } else {
+        html += `<li class="page-item disabled">
+                    <span class="page-link">Previous</span>
+                 </li>`;
+    }
+
+    html += `<li class="page-item disabled">
+                <span class="page-link">Page ${currentPage + 1}</span>
+             </li>`;
+    if (currentPage < totalPages - 1) {
+        html += `<li class="page-item">
+                    <button class="page-link page-btn" data-page="${currentPage + 1}">Next</button>
+                 </li>`;
+    } else {
+        html += `<li class="page-item disabled">
+                    <span class="page-link">Next</span>
+                 </li>`;
+    }
+
+    $("#pagination").html(html);
+}
+$(document).on("click", ".page-btn", function () {
+    const page = parseInt($(this).data("page"));
+    loadPagedJobs(page);
+});
+
+
 
 /*----------------------Edit Button -------------------------*/
 $(document).on("click", ".edit-btn", function () {
@@ -34,7 +106,7 @@ $(document).on("click", ".edit-btn", function () {
     });
 });
 
-/*-----------------Load Data to the Table---------------------*/
+/*/!*-----------------Load Data to the Table---------------------*!/
 function loadJobs() {
     $.ajax({
         url: "http://localhost:8080/api/v1/job/get",
@@ -63,7 +135,7 @@ function loadJobs() {
             alert("Failed to load jobs.");
         }
     });
-}
+}*/
 
 $(document).on("click", ".status-btn", function () {
     const jobId = $(this).data("id");
@@ -73,7 +145,7 @@ $(document).on("click", ".status-btn", function () {
         type: "PATCH",
         success: function (jobs) {
            alert("Changed Successfully")
-            loadJobs();
+            loadPagedJobs(0)
         },
         error: function () {
             alert("Failed to load jobs.");
@@ -105,7 +177,7 @@ $("#saveJobBtn").on("click", function () {
             contentType: "application/json",
             success: function (response) {
                 alert("Job saved successfully!");
-                loadJobs();
+               loadPagedJobs(0)
             },
             error: function (xhr, status, error) {
                 console.error("Error saving job:", error);
@@ -139,7 +211,7 @@ $("#updateJobBtn").on("click", function () {
         success: function () {
             alert("Job updated successfully!");
             $("#editJobModal").modal("hide");
-            loadJobs();
+            loadPagedJobs(0)
         },
         error: function () {
             alert("Failed to update job.");
