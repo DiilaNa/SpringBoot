@@ -1,6 +1,52 @@
 $(document).ready(function () {
     loadPagedJobs(0);
+
+    $("#searchInput").on("input", function () {
+        const keyword = $(this).val().trim();
+
+        if (keyword.length === 0) {
+            loadPagedJobs(0); // Reload full list if search box is cleared
+            return;
+        }
+
+        $.ajax({
+            url: `http://localhost:8080/api/v1/job/search/${encodeURIComponent(keyword)}`,
+            method: "GET",
+            success: function (jobs) {
+                $("#jobsTableBody").empty();
+
+                if (jobs.length === 0) {
+                    $("#jobsTableBody").append(`<tr><td colspan="7" class="text-center">No jobs found</td></tr>`);
+                    return;
+                }
+
+                jobs.forEach((job, index) => {
+                    const row = `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${job.jobTitle}</td>
+                            <td>${job.company}</td>
+                            <td>${job.location}</td>
+                            <td>${job.type}</td>
+                            <td>${job.status}</td>
+                            <td>
+                                <button class="btn btn-sm btn-warning edit-btn" data-id="${job.id}">Edit</button>
+                                <button class="btn btn-sm btn-danger delete-btn" data-id="${job.id}">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                    $("#jobsTableBody").append(row);
+                });
+            },
+            error: function () {
+                console.error("Search request failed.");
+            }
+        });
+    });
 });
+
+
+// --------------------Load Data to the Table---------------------
 
 let currentPage = 0;
 const jobsPerPage = 7;
@@ -40,6 +86,8 @@ function loadPagedJobs(page = 0) {
         }
     });
 }
+
+/*--------------------Generate Next / Prev Btns------------------*/
 function generateNextPrevButtons(totalPages, currentPage) {
     let html = "";
 
@@ -68,6 +116,7 @@ function generateNextPrevButtons(totalPages, currentPage) {
 
     $("#pagination").html(html);
 }
+
 $(document).on("click", ".page-btn", function () {
     const page = parseInt($(this).data("page"));
     loadPagedJobs(page);
