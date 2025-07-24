@@ -29,6 +29,8 @@ $(document).ready(function () {
                             <td>${job.location}</td>
                             <td>${job.type}</td>
                             <td>${job.status}</td>
+                            <td>${job.jobDescription}</td>
+                            
                             <td>
                                 <button class="btn btn-sm btn-warning edit-btn" data-id="${job.id}">Edit</button>
                                 <button class="btn btn-sm btn-danger delete-btn" data-id="${job.id}">Delete</button>
@@ -71,6 +73,7 @@ function loadPagedJobs(page = 0) {
                         <td>${job.location}</td>
                         <td>${job.type}</td>
                         <td>${job.status}</td>
+                        <td>${job.jobDescription}</td>
                         <td>
                             <button class="btn btn-sm btn-warning edit-btn" data-id="${job.id}">Edit</button>
                             <button class="btn btn-sm btn-info status-btn" data-id="${job.id}">Change Status</button>
@@ -155,36 +158,7 @@ $(document).on("click", ".edit-btn", function () {
     });
 });
 
-/*/!*-----------------Load Data to the Table---------------------*!/
-function loadJobs() {
-    $.ajax({
-        url: "http://localhost:8080/api/v1/job/get",
-        type: "GET",
-        success: function (jobs) {
-            $("#jobsTableBody").empty();
 
-            jobs.forEach((job, index) => {
-                $("#jobsTableBody").append(`
-                    <tr>
-                        <td>${index + 1}</td>
-                        <td>${job.jobTitle}</td>
-                        <td>${job.company}</td>
-                        <td>${job.location}</td>
-                        <td>${job.type}</td>
-                        <td>${job.status}</td>
-                        <td>
-                            <button class="btn btn-sm btn-warning edit-btn" data-id="${job.id}">Edit</button>
-                             <button class="btn btn-sm btn-info status-btn" data-id="${job.id}">Change Status</button>
-                        </td>
-                    </tr>
-                `);
-            });
-        },
-        error: function () {
-            alert("Failed to load jobs.");
-        }
-    });
-}*/
 
 $(document).on("click", ".status-btn", function () {
     const jobId = $(this).data("id");
