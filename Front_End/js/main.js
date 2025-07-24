@@ -58,13 +58,21 @@ function loadPagedJobs(page = 0) {
         url: `http://localhost:8080/api/v1/job/get-paged?page=${page}&size=${jobsPerPage}`,
         type: "GET",
         success: function (response) {
+
+            const jobList = Array.isArray(response.data)
+                ? response.data
+                : Array.isArray(response.data?.content)
+                    ? response.data.content
+                    : [];
+
             const jobs = response.content;
             const totalPages = response.totalPages;
 
             currentPage = page;
 
             $("#jobsTableBody").empty();
-            jobs.forEach((job, index) => {
+            jobList.forEach((job, index) => {
+                console.log("🔍 Search API returned:", jobs);
                 $("#jobsTableBody").append(`
                     <tr>
                         <td>${index + 1 + (page * jobsPerPage)}</td>
