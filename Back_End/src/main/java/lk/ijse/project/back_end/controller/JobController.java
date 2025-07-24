@@ -11,17 +11,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 @RequestMapping("api/v1/job")
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin
 public class JobController {
-
+    Logger logger = Logger.getLogger(JobController.class.getName());
     private final JobService jobService;
 
     @PostMapping("create")
     public ResponseEntity<ApiResponse> createJob(@Valid @RequestBody JobDto jobDto) {
+        logger.info("Create job successfully");
             jobService.saveJob(jobDto);
             return ResponseEntity.ok(
                     new ApiResponse(
