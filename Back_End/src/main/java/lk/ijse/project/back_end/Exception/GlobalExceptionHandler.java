@@ -12,4 +12,15 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse> HandleGenericException(Exception e){
         return new ResponseEntity<>(new ApiResponse(500,e.getMessage(),null),HttpStatus.INTERNAL_SERVER_ERROR);
     }
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ApiResponse> HandleResourceNotFoundException(){
+        return new ResponseEntity<>(new ApiResponse(404,"Resource not found",null),HttpStatus.NOT_FOUND);
+    }
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ApiResponse> handleBadRequest(BadRequestException ex) {
+        return new ResponseEntity<>(
+                new ApiResponse(400, ex.getMessage(), null),
+                HttpStatus.BAD_REQUEST
+        );
+    }
 }

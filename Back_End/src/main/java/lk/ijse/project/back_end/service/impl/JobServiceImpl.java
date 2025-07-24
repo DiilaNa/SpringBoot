@@ -1,5 +1,7 @@
 package lk.ijse.project.back_end.service.impl;
 
+import lk.ijse.project.back_end.Exception.BadRequestException;
+import lk.ijse.project.back_end.Exception.ResourceNotFoundException;
 import lk.ijse.project.back_end.dto.JobDto;
 import lk.ijse.project.back_end.entity.Job;
 import lk.ijse.project.back_end.repostory.JobRepository;
@@ -24,18 +26,24 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public void saveJob(JobDto jobDto) {
+        if (jobDto.getJobTitle() == null) {
+            throw new BadRequestException("id is null");
+        }
         jobRepository.save(modelMapper.map(jobDto, Job.class));
     }
 
     @Override
     public void updateJob(JobDto jobDto) {
-      jobRepository.save(modelMapper.map(jobDto, Job.class));
+        jobRepository.save(modelMapper.map(jobDto, Job.class));
     }
 
     @Override
     public List<JobDto> getAllJobs() {
 //        return jobRepository.findAll().stream().map(j -> modelMapper.map(j, JobDto.class)).toList();
         List<Job> allJobs = jobRepository.findAll();
+        if (allJobs.isEmpty()) {
+            throw new ResourceNotFoundException("No Job found");
+        }
         return modelMapper.map(allJobs, new TypeToken<List<JobDto>>() {}.getType());
 
     }
@@ -48,6 +56,9 @@ public class JobServiceImpl implements JobService {
     @Override
     public List<JobDto> getAllJobsByKeyword(String keyword) {
         List<Job> list = jobRepository.findJobByJobTitleContainingIgnoreCase(keyword);
+        if (list.isEmpty()) {
+            throw new ResourceNotFoundException("No Job found");
+        }
         return modelMapper.map(list, new TypeToken<List<JobDto>>() {}.getType());
     }
 
